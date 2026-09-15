@@ -1,6 +1,15 @@
 <div align="center">
 
 # AstroLab
+
+<p>
+  <img src="https://img.shields.io/badge/Architecture-Asymmetric%20Fine--Tuning-6366f1" alt="Asymmetric Fine-Tuning">
+  <img src="https://img.shields.io/badge/Model%20Scale-1B%20to%208B-8b5cf6" alt="1B to 8B Models">
+  <img src="https://img.shields.io/badge/Delivery-Client--Owned%20Weights-ec4899" alt="Client-Owned Weights">
+  <img src="https://img.shields.io/badge/Stack-MLX%20%7C%20Unsloth%20%7C%20Modal-f97316" alt="MLX | Unsloth | Modal">
+  <img src="https://img.shields.io/badge/Status-Active-16a34a" alt="Active">
+</p>
+
 A lean, high-margin AI engineering lab solving the $400B "Big Token" Problem for Enterprise Operations, Logistics, FinTech, and B2B systems.
 
 </div>
