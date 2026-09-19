@@ -1,0 +1,15 @@
+Phase 1 Synthetic Dataset & Distillation Pipeline :
+     ☐ Source legal NDA & Agreements through datasets for fine-tune training
+     ☐ Research and find legal datasets with NDAs and legal agreements in M&A deals
+     ☐ Process dataset using a role-oriented LLM for Pydantic/JSON Schema for clauses
+     ☐ Data verification and cleaning for processed dataset
+
+Phase 2 Baseline Benchmarking (Pre-Fine-Tuning) :
+     ☐ Prepare baseline large langauge model for CUAD benchmarking
+     ☐ Base SLM evals, compare 2-3 models for best baseline benchmark score to build upon
+     ☐ record metrics and evals for scoring and choose a final winner model
+
+Phase 3 Fine-Tuning with Unsloth :
+     ☐ Fine-tuning adapter and configuration for best outcome
+     ☐ Enforce target-only loss masking for evaluation through fine-tuning
+     ☐ Compare benchmarking evals and evaluate latency scores
