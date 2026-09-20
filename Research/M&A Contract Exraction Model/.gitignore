@@ -1,0 +1,6 @@
+# Corpus lives on Hugging Face, not this machine
+data/
+*.jsonl
+*.jsonl.gz
+hf_cache/
+.cache/

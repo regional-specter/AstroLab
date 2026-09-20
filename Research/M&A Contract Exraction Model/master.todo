@@ -1,8 +1,9 @@
 Phase 1 Synthetic Dataset & Distillation Pipeline :
-     ☐ Source legal NDA & Agreements through datasets for fine-tune training
-     ☐ Research and find legal datasets with NDAs and legal agreements in M&A deals
+     ✔ Create private Hugging Face dataset Aby-ss/ma-extraction-3B-research (size tag 10K<n<100K, not 1M<n<10M) @done(26-09-20 13:12)
+     ✔ Ingest 800 contracts to the Hub via scripts/ingest_to_hub.py; delete local cache after upload @done(26-09-20 13:12)
+     ☐ Push raw/parsed text to the Hub; delete the worker disk after
      ☐ Process dataset using a role-oriented LLM for Pydantic/JSON Schema for clauses
-     ☐ Data verification and cleaning for processed dataset
+     ☐ Data verification and cleaning for processed dataset; freeze splits/train.jsonl and valid.jsonl on the Hub
 
 Phase 2 Baseline Benchmarking (Pre-Fine-Tuning) :
      ☐ Prepare baseline large langauge model for CUAD benchmarking

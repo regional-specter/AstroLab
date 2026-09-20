@@ -1,3 +1,36 @@
+### Data scale, mix, and remote storage
+
+The Mac is **code-only**. Do not download the corpus locally. Canonical data lives in the private Hugging Face dataset **[Aby-ss/ma-extraction-3B-research](https://huggingface.co/datasets/Aby-ss/ma-extraction-3B-research)**; chunking, distillation, and Unsloth runs happen on an **ephemeral cloud box** (Colab, RunPod, or similar) whose disk is deleted after each job.
+
+**Scale (paper-sized, not a bulk EDGAR dump):** 800 contracts → ~8,000–12,000 kept extraction examples. Expected Hub size **~2–4 GB**. Hard stop at 1,000 contracts / ~15k examples.
+
+**Document mix (800 total):**
+
+| Slice | Docs | Approx. token share | Source |
+|---|---:|---:|---|
+| Merger / stock-purchase | 250 | ~55–60% | All 152 MAUD + 98 EDGAR |
+| Commercial / vendor | 250 | ~22% | EDGAR EX-10 (supply, service, license, distribution) |
+| NDAs | 180 | ~8% | ContractNLI subset (not all 607) |
+| Leases | 80 | ~8% | EDGAR lease exhibits |
+| Other M&A-adjacent | 40 | ~4% | EDGAR (JV, asset purchase, employment) |
+
+Train/valid are **document-level** (720 / 80, stratified). **CUAD is eval-only** and must not enter distillation or fine-tuning.
+
+**Hub size tag:** Hugging Face `size_categories` is **row count (`n`)**, not gigabytes. `1M<n<10M` is wrong for this project. Use **`10K<n<100K`** for the distilled training set (~8k–12k examples). Source contracts alone are ~800 rows (`n<1K`). Disk on the Hub should stay ~2–4 GB at most.
+
+**Hub layout (`Aby-ss/ma-extraction-3B-research`):**
+
+- `raw/` — MAUD, ContractNLI sample, typed EDGAR text/HTML (no PDFs)
+- `parsed/` — clean text + sidecar metadata
+- `chunks/` — 2,048 / 256-overlap jsonl
+- `distilled/` — teacher JSON after verbatim-quote filter
+- `splits/train.jsonl`, `splits/valid.jsonl`
+- `manifests/sources.csv` — id, type, source, license, sha256, token length
+
+**Local machine rules:** stream with `load_dataset(..., streaming=True)` if a smoke test is needed; never set `HF_HOME` / `HF_DATASETS_CACHE` to a folder on this Mac. Git tracks code and the manifest schema only.
+
+---
+
 ### Phase 1: Synthetic Dataset & Distillation Pipeline
 
 1. **Source Legal Corpus Setup:** Gather unannotated M&A agreements, NDAs, and vendor contracts. Segment text using sliding-window chunking (~2,048 tokens with 256-token overlap) to mirror CUAD context lengths.
