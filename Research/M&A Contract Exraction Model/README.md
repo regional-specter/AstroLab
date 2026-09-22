@@ -33,10 +33,11 @@ Train/valid are **document-level** (720 / 80, seed 42, stratified): merger 225/2
 ### Phase 1: Synthetic Dataset & Distillation Pipeline
 
 1. **Source Legal Corpus Setup:** Gather unannotated M&A agreements, NDAs, and vendor contracts. Segment text using sliding-window chunking (~2,048 tokens with 256-token overlap) to mirror CUAD context lengths.
-2. **Teacher Model Distillation (Claude 3.5 Sonnet / o1):**
+2. **Teacher Model Distillation (Gemini 3.5 Flash-Lite):**
 
-- Prompt teacher models to act as senior M&A counsel, extracting 41 predefined clause types (e.g., *Governing Law*, *Termination for Convenience*, *Anti-Assignment*).
-- Enforce response output format strictly matching a Pydantic/JSON Schema (e.g., `{clause_type: str, exact_quote: str, confidence: float, statute_code: str}`).
+- Prompt the teacher as senior M&A counsel, extracting 41 predefined clause types (e.g., *Governing Law*, *Termination for Convenience*, *Anti-Assignment*).
+- Enforce JSON matching `{clause_type, exact_quote, confidence, statute_code}`.
+- Free-tier cap is ~500 requests/day; the job resumes from Hub shards. Do not use Claude unless you later want a paid quality check.
 
 1. **Data Verification & Cleaning:**
 
