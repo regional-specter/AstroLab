@@ -2,8 +2,9 @@ Phase 1 Synthetic Dataset & Distillation Pipeline :
      ✔ Create private Hugging Face dataset Aby-ss/ma-extraction-3B-research (size tag 10K<n<100K, not 1M<n<10M) @done(26-09-20 13:12)
      ✔ Ingest 800 contracts to the Hub via scripts/ingest_to_hub.py; delete local cache after upload @done(26-09-20 13:12)
      ✔ Push parsed text to the Hub; freeze document splits (720/80) and 9,698 chunks @done(26-09-20 13:30)
-     ☐ Process chunks with Gemini 3.5 Flash-Lite — 485/8756 train labeled (0/942 valid); resume daily (cap 480)
-     ☐ Data verification (verbatim quotes) and freeze splits/train.jsonl.gz + valid.jsonl.gz on the Hub
+     ✔ Convert CUAD-QA expert labels to JSON extraction rows (408 contracts → ~2,396/296 chunks) @done(26-10-01 17:42)
+     ☐ hf auth login, then: python3 scripts/convert_cuad_qa.py --upload-only
+     ☐ Colab T4: Unsloth Llama-3.2-3B on cuad_qa_*.jsonl.gz (scripts/train_unsloth.py)
 
 Phase 2 Baseline Benchmarking (Pre-Fine-Tuning) :
      ☐ Prepare baseline large langauge model for CUAD benchmarking

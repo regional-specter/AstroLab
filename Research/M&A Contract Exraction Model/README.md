@@ -14,7 +14,7 @@ The Mac is **code-only**. Do not download the corpus locally. Canonical data liv
 | Leases | 80 | ~8% | EDGAR lease exhibits |
 | Other M&A-adjacent | 40 | ~4% | EDGAR (JV, asset purchase, employment) |
 
-Train/valid are **document-level** (720 / 80, seed 42, stratified): merger 225/25, commercial 225/25, NDA 162/18, lease 72/8, other 36/4. **Chunks:** 9,698 windows (8,756 train / 942 valid) at 2,048 / 256 overlap. **CUAD is eval-only** and must not enter distillation or fine-tuning.
+Train/valid for the first Unsloth run are **CUAD-QA expert labels** (no Gemini): 408 CUAD train contracts, chunked 2,048/256, **~2,396 train / ~296 valid** JSON rows. Official CUAD **test (102 contracts) stays eval-only**. Gemini distillation of the 800-doc Hub corpus is paused.
 
 **Hub size tag:** Hugging Face `size_categories` is **row count (`n`)**, not gigabytes. `1M<n<10M` is wrong for this project. Use **`10K<n<100K`** for the distilled training set (~8k–12k examples). Source contracts alone are ~800 rows (`n<1K`). Disk on the Hub should stay ~2–4 GB at most.
 
@@ -22,8 +22,8 @@ Train/valid are **document-level** (720 / 80, seed 42, stratified): merger 225/2
 
 - `parsed/documents.jsonl.gz` — 800 contracts
 - `chunks/train.jsonl.gz`, `chunks/valid.jsonl.gz` — 2,048 / 256-overlap windows
-- `distilled/` — teacher JSON after verbatim-quote filter
-- `splits/train.jsonl.gz`, `splits/valid.jsonl.gz` — frozen ChatML/Alpaca after verification
+- `splits/cuad_qa_train.jsonl.gz`, `splits/cuad_qa_valid.jsonl.gz` — CUAD expert labels in ChatML/Alpaca JSON (use these for Unsloth)
+- `distilled/` — optional Gemini teacher shards (incomplete; not required for the Colab run)
 - `manifests/sources.csv`, `manifests/splits.csv`
 
 **Local machine rules:** stream with `load_dataset(..., streaming=True)` if a smoke test is needed; never set `HF_HOME` / `HF_DATASETS_CACHE` to a folder on this Mac. Git tracks code and the manifest schema only.
