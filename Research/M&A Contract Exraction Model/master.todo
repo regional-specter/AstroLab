@@ -4,7 +4,7 @@ Phase 1 Synthetic Dataset & Distillation Pipeline :
      ✔ Push parsed text to the Hub; freeze document splits (720/80) and 9,698 chunks @done(26-09-20 13:30)
      ✔ Convert CUAD-QA expert labels to JSON extraction rows (408 contracts → ~2,396/296 chunks) @done(26-10-01 17:42)
      ☐ hf auth login, then: python3 scripts/convert_cuad_qa.py --upload-only
-     ☐ Colab T4: Unsloth Llama-3.2-3B on cuad_qa_*.jsonl.gz (scripts/train_unsloth.py)
+     ☐ Colab T4: upload cuad_qa_unsloth.ipynb, then the two jsonl.gz files in the notebook
 
 Phase 2 Baseline Benchmarking (Pre-Fine-Tuning) :
      ☐ Prepare baseline large langauge model for CUAD benchmarking
