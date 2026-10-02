@@ -1,0 +1,6 @@
+Phase 0 Scaffold :
+     ✔ Folder + Hub name reserved in README
+     ☐ Freeze JSON schema (ISIN, trade value, settlement date, accounts)
+     ☐ Convert FinRED / FinTagging to ChatML JSON rows on Hub
+     ☐ Colab T4 baseline 3B + one QLoRA
+     ☐ Add Outlines / grammar constraints at inference

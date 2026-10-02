@@ -1,0 +1,6 @@
+Phase 0 Scaffold :
+     ✔ Folder + Hub name reserved in README
+     ☐ DUA / PhysioNet access (or synthetic-only path)
+     ☐ Freeze FHIR JSON schema
+     ☐ Convert on wiped cloud disk only
+     ☐ 8B QLoRA on RunPod 4090, then destroy the pod

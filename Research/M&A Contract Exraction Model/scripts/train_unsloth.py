@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Unsloth QLoRA for CUAD JSON clause extraction. Run this in Google Colab (T4).
+"""Unsloth QLoRA for CUAD JSON clause extraction. NVIDIA only (Colab T4, then Modal).
+
+Do not run on the MacBook Air. Pull splits from the Hub with HF_TOKEN.
 
 Colab:
   1. Runtime → GPU (T4).
-  2. Upload .cache/cuad_qa_train.jsonl.gz and cuad_qa_valid.jsonl.gz
-     OR set HF_TOKEN and pull from Aby-ss/ma-extraction-3B-research.
+  2. huggingface-cli login (read access to Aby-ss/ma-extraction-3B-research).
   3. !pip install unsloth
   4. !python train_unsloth.py
 """
@@ -19,7 +20,7 @@ from datasets import Dataset
 
 HF_REPO = "Aby-ss/ma-extraction-3B-research"
 MODEL_NAME = "unsloth/Llama-3.2-3B-Instruct"
-MAX_SEQ_LENGTH = 4096
+MAX_SEQ_LENGTH = 2048  # T4 16GB: 4096 + eval OOMs
 LOCAL_TRAIN = Path("cuad_qa_train.jsonl.gz")
 LOCAL_VALID = Path("cuad_qa_valid.jsonl.gz")
 
@@ -54,8 +55,7 @@ def main() -> None:
     from trl import SFTTrainer, SFTConfig
 
     train_ds = load_split("train")
-    valid_ds = load_split("valid")
-    print(f"train={len(train_ds)} valid={len(valid_ds)}")
+    print(f"train={len(train_ds)} (eval disabled on T4)")
 
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=MODEL_NAME,
@@ -76,6 +76,7 @@ def main() -> None:
             "up_proj",
             "down_proj",
         ],
+        use_gradient_checkpointing="unsloth",
     )
 
     def formatting_prompts_func(examples):
@@ -91,7 +92,6 @@ def main() -> None:
         return {"text": texts}
 
     train_ds = train_ds.map(formatting_prompts_func, batched=True)
-    valid_ds = valid_ds.map(formatting_prompts_func, batched=True)
 
     from unsloth.chat_templates import train_on_responses_only
 
@@ -99,7 +99,7 @@ def main() -> None:
         model=model,
         tokenizer=tokenizer,
         train_dataset=train_ds,
-        eval_dataset=valid_ds,
+        eval_dataset=None,
         args=SFTConfig(
             per_device_train_batch_size=1,
             gradient_accumulation_steps=8,
@@ -107,12 +107,15 @@ def main() -> None:
             num_train_epochs=1,
             learning_rate=2e-4,
             logging_steps=10,
-            eval_strategy="steps",
-            eval_steps=50,
+            eval_strategy="no",
             max_seq_length=MAX_SEQ_LENGTH,
             dataset_text_field="text",
             output_dir="outputs_cuad_qa",
             seed=42,
+            optim="adamw_8bit",
+            fp16=True,
+            gradient_checkpointing=True,
+            report_to="none",
         ),
     )
     trainer = train_on_responses_only(

@@ -1,0 +1,6 @@
+Phase 0 Scaffold :
+     ✔ Folder + Hub name reserved in README
+     ☐ Freeze logistics JSON/XML schema
+     ☐ Stream FUNSD / CORD subsets; write noise-injection generator (yield)
+     ☐ Modal CPU convert if local smoke works
+     ☐ Train 1.5B QLoRA on Colab T4

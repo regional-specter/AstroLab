@@ -1,0 +1,15 @@
+# Corpora live on Hugging Face. Never commit them.
+.cache/
+**/hf_cache/
+**/.hf_home/
+data/
+colab_data/
+*.jsonl.gz
+*.jsonl
+!**/fixtures/*.jsonl
+
+# Train artifacts
+**/outputs*/
+**/lora_*/
+**/__pycache__/
+.DS_Store

@@ -2,6 +2,12 @@
 """Convert official CUAD-QA labels into the same JSON extraction rows as distillation.
 
 No teacher API. Train/valid come from CUAD train contracts only. Official CUAD test stays eval-only.
+
+Run convert/upload on Colab or any machine you will wipe — not as a long-lived cache on the Air.
+
+  python3 scripts/convert_cuad_qa.py              # train/valid + upload
+  python3 scripts/convert_cuad_qa.py --upload-only
+  python3 scripts/convert_cuad_qa.py --eval-test  # official 102-contract gold, eval-only
 """
 
 from __future__ import annotations
@@ -150,7 +156,7 @@ def assign_splits(doc_ids: list[str]) -> dict[str, str]:
 
 
 def convert(docs: list[dict], split_of: dict[str, str], enc: tiktoken.Encoding) -> dict[str, list[dict]]:
-    rows = {"train": [], "valid": []}
+    rows: dict[str, list[dict]] = {"train": [], "valid": [], "test": []}
     for doc in docs:
         split = split_of[doc["id"]]
         pieces = iter_chunks(doc["text"], enc)
@@ -191,11 +197,7 @@ def write_jsonl(path: Path, rows: list[dict]) -> None:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
-def upload_splits() -> None:
-    files = {
-        "splits/cuad_qa_train.jsonl.gz": CACHE / "cuad_qa_train.jsonl.gz",
-        "splits/cuad_qa_valid.jsonl.gz": CACHE / "cuad_qa_valid.jsonl.gz",
-    }
+def upload_files(files: dict[str, Path], message: str) -> None:
     missing = [str(p) for p in files.values() if not p.exists()]
     if missing:
         raise SystemExit(f"Missing local splits: {missing}")
@@ -207,15 +209,47 @@ def upload_splits() -> None:
             path_in_repo=dest,
             repo_id=HF_REPO,
             repo_type="dataset",
-            commit_message="Add CUAD-QA expert-labeled train/valid JSON extraction splits",
+            commit_message=message,
         )
+
+
+def upload_splits() -> None:
+    files = {
+        "splits/cuad_qa_train.jsonl.gz": CACHE / "cuad_qa_train.jsonl.gz",
+        "splits/cuad_qa_valid.jsonl.gz": CACHE / "cuad_qa_valid.jsonl.gz",
+    }
+    upload_files(files, "Add CUAD-QA expert-labeled train/valid JSON extraction splits")
     print("Uploaded CUAD-QA splits.", flush=True)
+
+
+def convert_test(docs: list[dict], enc: tiktoken.Encoding) -> list[dict]:
+    split_of = {doc["id"]: "test" for doc in docs}
+    return convert(docs, split_of, enc)["test"]
 
 
 def main() -> None:
     CACHE.mkdir(parents=True, exist_ok=True)
     if "--upload-only" in sys.argv:
         upload_splits()
+        return
+    if "--eval-test" in sys.argv:
+        zip_path = CACHE / "cuad_data.zip"
+        if not zip_path.exists():
+            print("Downloading CUAD data.zip…", flush=True)
+            urlretrieve(CUAD_ZIP_URL, zip_path)
+        docs = load_contracts(zip_path, "test_separate_questions.json")
+        enc = tiktoken.get_encoding("cl100k_base")
+        rows = convert_test(docs, enc)
+        dest_local = CACHE / "cuad_qa_test_gold.jsonl.gz"
+        write_jsonl(dest_local, rows)
+        print(f"CUAD test contracts={len(docs)} gold_chunks={len(rows)}", flush=True)
+        upload_files(
+            {"splits/cuad_qa_test_gold.jsonl.gz": dest_local},
+            "Add CUAD official test gold JSON extraction split (eval-only)",
+        )
+        dest_local.unlink(missing_ok=True)
+        zip_path.unlink(missing_ok=True)
+        print("Done. Test gold is on the Hub. Do not train on it.", flush=True)
         return
     zip_path = CACHE / "cuad_data.zip"
     if not zip_path.exists():

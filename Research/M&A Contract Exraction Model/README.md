@@ -1,3 +1,39 @@
+# Paper 1 — Legal / M&A contract extraction (active)
+
+**Order:** first. Template for the other three papers.
+
+Mac = control room. Hub = disk. Colab T4 = first GPU. `modal_train.py` = later. Do not Unsloth on the Air.
+
+| | |
+|---|---|
+| **Hub** | [Aby-ss/ma-extraction-3B-research](https://huggingface.co/datasets/Aby-ss/ma-extraction-3B-research) |
+| **Train** | CUAD-QA expert labels → JSON rows (~2,396 / 296) |
+| **Eval** | Official CUAD **test** (102 contracts) only — never in the trainer |
+| **Schema** | `schemas/clause_extraction.json` |
+
+### Run on the M3 (no corpus)
+
+```bash
+python3 scripts/validate_rows.py
+python3 scripts/eval_cuad.py
+```
+
+### Run on Colab T4 (upload the notebook only)
+
+You cannot (and should not) upload jsonl or scripts. The notebook pulls data from the Hub, or converts CUAD inside Colab if those files are missing.
+
+1. Create a Hugging Face token that can **read** `Aby-ss/ma-extraction-3B-research`.
+2. Colab → Runtime → **T4 GPU**.
+3. Upload **only** `cuad_qa_unsloth.ipynb`.
+4. Runtime → Run all. Paste the token when asked.
+5. Wait 30–90 minutes. Download `lora_cuad_qa.zip` from the last cell.
+
+### Graduate later
+
+`modal run modal_train.py` after the notebook works once.
+
+---
+
 ### Data scale, mix, and remote storage
 
 The Mac is **code-only**. Do not download the corpus locally. Canonical data lives in the private Hugging Face dataset **[Aby-ss/ma-extraction-3B-research](https://huggingface.co/datasets/Aby-ss/ma-extraction-3B-research)**; chunking, distillation, and Unsloth runs happen on an **ephemeral cloud box** (Colab, RunPod, or similar) whose disk is deleted after each job.
@@ -23,6 +59,7 @@ Train/valid for the first Unsloth run are **CUAD-QA expert labels** (no Gemini):
 - `parsed/documents.jsonl.gz` — 800 contracts
 - `chunks/train.jsonl.gz`, `chunks/valid.jsonl.gz` — 2,048 / 256-overlap windows
 - `splits/cuad_qa_train.jsonl.gz`, `splits/cuad_qa_valid.jsonl.gz` — CUAD expert labels in ChatML/Alpaca JSON (use these for Unsloth)
+- `splits/cuad_qa_test_gold.jsonl.gz` — official CUAD test, eval-only (`convert_cuad_qa.py --eval-test`)
 - `distilled/` — optional Gemini teacher shards (incomplete; not required for the Colab run)
 - `manifests/sources.csv`, `manifests/splits.csv`
 

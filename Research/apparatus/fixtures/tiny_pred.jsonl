@@ -1,0 +1,2 @@
+{"id": "tiny-1", "output": {"clauses": [{"clause_type": "Governing Law", "exact_quote": "governed by the laws of the State of Delaware", "confidence": 0.9, "statute_code": ""}, {"clause_type": "Termination for Convenience", "exact_quote": "terminate for convenience on thirty days notice", "confidence": 0.8, "statute_code": ""}]}}
+{"id": "tiny-2", "output": {"clauses": [{"clause_type": "Third Party Beneficiary", "exact_quote": "there is no third party beneficiary", "confidence": 0.7, "statute_code": ""}]}}

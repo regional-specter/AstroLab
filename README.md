@@ -137,9 +137,12 @@ This flywheel turns live production telemetry into private model upgrades. The t
 
 | Module / Topic | Category | Notes & Status |
 | :--- | :--- | :--- |
-| **Unsloth Fine-tuning Notes** | Learning Notes | Local QLoRA/LoRA optimization on Apple Silicon (MLX) and RunPod GPU setups. |
-| **Noyron Verification Engine** | Core Infra | Python & JSON Schema execution sandbox integration for dataset verification. |
-| **Logistics Document Benchmark** | Research Paper | Baseline setup for Bill-of-Lading structured field parsing using 3B models. |
+| **Research apparatus** | Infra | Mac designs → Hub stores → Colab/Modal GPU. See `Research/README.md`. |
+| **M&A / CUAD 3B** | Paper 1 (active) | CUAD-QA JSON rows on Hub; Colab T4 Unsloth next. |
+| **Fintech settlement 3B** | Paper 2 | FinRED / FinTagging + grammars. Not started. |
+| **Logistics OCR 1.5B** | Paper 3 | FUNSD/CORD as noise proxies. Not started. |
+| **Clinical eligibility 8B** | Paper 4 | DUA + wiped GPU. Last. |
+| **Token Waste Calculator** | Hook | M3-only CLI stub in `Research/token-waste-calculator/`. |
 
 
 *AstroLab © 2026 Rao Abdul Hadi. All rights reserved.*
